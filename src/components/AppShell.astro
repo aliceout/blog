@@ -1,0 +1,12 @@
+---
+import Sidebar from "./Sidebar.astro";
+---
+
+<div class="relative min-h-[100dvh] lg:min-h-screen text-ink bg-surface font-sans">
+  <Sidebar />
+  <main
+    class="relative lg:ml-[248px] min-h-[100dvh] lg:min-h-screen pt-[60px] pb-12 lg:pt-0 lg:pb-0"
+  >
+    <slot />
+  </main>
+</div>

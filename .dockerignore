@@ -1,0 +1,33 @@
+node_modules
+dist
+.astro
+
+.git
+.github
+.vscode
+.idea
+.DS_Store
+
+# env never baked into image
+.env
+.env.*
+!.env.example
+
+# logs / debug artefacts
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Lighthouse reports
+*.report.html
+*.report.json
+
+# Build/runtime files not needed inside image
+Dockerfile
+.dockerignore
+compose.yml
+docker-compose.yml
+README.md
+LICENSE
+.eslintrc.json
+eslint.config.mjs

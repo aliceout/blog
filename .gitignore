@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+.astro/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment
+.env
+.env.production
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+
+# editors
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# Lighthouse reports
+*.report.html
+*.report.json

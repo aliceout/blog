@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+verifyDepsBeforeRun: false
+minimumReleaseAgeExclude:
+  - astro@6.3.6
+allowBuilds:
+  esbuild: set this to true or false
+  sharp: set this to true or false

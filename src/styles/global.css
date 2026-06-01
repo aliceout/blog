@@ -1,0 +1,178 @@
+@import "tailwindcss";
+@import "./proto.css";
+
+/* ============================================================
+   Custom dark variant — utilise [data-theme="dark"] sur <html>
+   ============================================================ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ============================================================
+   Tokens exposés à Tailwind 4 via @theme
+   ============================================================ */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+
+  --color-surface: var(--bg);
+  --color-surface-tint: var(--bg-tint);
+  --color-surface-tint-2: var(--bg-tint-2);
+  --color-surface-card: var(--bg-card);
+
+  --color-line: var(--line);
+  --color-line-d: var(--line-d);
+
+  --color-accent: var(--accent);
+  --color-accent-d: var(--accent-d);
+
+  --color-azur: var(--azur);
+  --color-azur-d: var(--azur-d);
+  --color-rouge: var(--rouge);
+  --color-rouge-d: var(--rouge-d);
+  --color-mousse: var(--mousse);
+  --color-mousse-d: var(--mousse-d);
+  --color-indigo: var(--indigo);
+  --color-indigo-d: var(--indigo-d);
+  --color-magenta: var(--magenta);
+  --color-magenta-d: var(--magenta-d);
+  --color-lagune: var(--lagune);
+  --color-lagune-d: var(--lagune-d);
+  --color-soleil: var(--soleil);
+  --color-soleil-d: var(--soleil-d);
+  --color-prune: var(--prune);
+  --color-prune-d: var(--prune-d);
+
+  --font-sans: var(--font-sans);
+  --font-tight: var(--font-sans-tight);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+
+  /* Accent multi-catégorie : se recalcule via --hue (posé inline) */
+  --color-cat: oklch(var(--cat-l) var(--cat-c) var(--hue));
+}
+
+/* ============================================================
+   Custom properties (light defaults)
+   ============================================================ */
+:root {
+  /* Surfaces */
+  --bg: #ffffff;
+  --bg-tint: #f6f5f1;
+  --bg-tint-2: #efeee9;
+  --bg-card: #ffffff;
+
+  /* Ink (texte) */
+  --ink: #16171a;
+  --ink-2: #43454c;
+  --ink-3: #898a8e;
+  --ink-4: #c2c1bd;
+
+  /* Lignes */
+  --line: #e8e6dd;
+  --line-d: #d6d3c7;
+
+  /* 8 accents — soft + deep */
+  --azur: #c8def8;
+  --azur-d: #2b6fd1;
+  --rouge: #f6c8c4;
+  --rouge-d: #d23a3a;
+  --mousse: #cee6c2;
+  --mousse-d: #4a9248;
+  --indigo: #d5cffa;
+  --indigo-d: #5a4dd6;
+  --magenta: #f4c8e3;
+  --magenta-d: #c7298b;
+  --lagune: #b9e3dc;
+  --lagune-d: #1e9684;
+  --soleil: #f7e3a6;
+  --soleil-d: #c89512;
+  --prune: #ecc5d3;
+  --prune-d: #b32d62;
+
+  /* Aliases sémantiques */
+  --slate: var(--azur);
+  --slate-d: var(--azur-d);
+  --terra: var(--magenta);
+  --terra-d: var(--magenta-d);
+  --steel: var(--indigo);
+  --steel-d: var(--indigo-d);
+  --plum: var(--prune);
+  --plum-d: var(--prune-d);
+  --corail: var(--rouge);
+  --corail-d: var(--rouge-d);
+  --terre: var(--magenta);
+  --terre-d: var(--magenta-d);
+  --ocre: var(--soleil);
+  --ocre-d: var(--soleil-d);
+
+  --accent: var(--azur);
+  --accent-d: var(--azur-d);
+
+  /* Bleu dédié pour les noms d'organisation */
+  --org-color: #4a6688;
+
+  /* Multi-accent (clair) : clarté/chroma des accents + teinte par défaut */
+  --cat-l: 0.555;
+  --cat-c: 0.155;
+  --hue: 150; /* fallback (vert "bash") quand aucune catégorie n'est posée */
+
+  /* Typo (CSS vars utilisées par .proto-* + Tailwind via @theme)
+     Polices auto-hébergées via @fontsource-variable (cf. BaseLayout) */
+  --font-serif: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-sans-tight: "Inter Tight Variable", "Inter Variable", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* Bandes — densité */
+  --band-py: 28px;
+  --band-px: 56px;
+  --section-gap: 0px;
+}
+
+[data-density="compact"] {
+  --band-py: 20px;
+  --band-px: 44px;
+}
+[data-density="spacious"] {
+  --band-py: 44px;
+  --band-px: 72px;
+}
+
+[data-theme="dark"] {
+  --bg: #0e0f12;
+  --bg-tint: #14161b;
+  --bg-tint-2: #181a20;
+  --bg-card: #161820;
+  --ink: #ebecef;
+  --ink-2: #b0b1b8;
+  --ink-3: #74757c;
+  --ink-4: #43444a;
+  --line: #22242a;
+  --line-d: #2c2e35;
+
+  /* Multi-accent (sombre) : accents plus clairs / moins chromatiques */
+  --cat-l: 0.785;
+  --cat-c: 0.135;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+}

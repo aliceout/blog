@@ -1,0 +1,36 @@
+---
+import { Icon as IconifyIcon } from "astro-icon/components";
+
+const ICON_MAP: Record<string, string> = {
+  // UI icons (Lucide)
+  home: "lucide:house",
+  briefcase: "lucide:briefcase",
+  cap: "lucide:graduation-cap",
+  hands: "lucide:hand-heart",
+  gallery: "lucide:image",
+  download: "lucide:download",
+  pin: "lucide:map-pin",
+  sun: "lucide:sun",
+  moon: "lucide:moon",
+  github: "lucide:github",
+  external: "lucide:external-link",
+  menu: "lucide:menu",
+  close: "lucide:x",
+  // Services (Simple Icons)
+  linkedin: "simple-icons:linkedin",
+  mail: "simple-icons:protonmail",
+  signal: "simple-icons:signal",
+  teams: "simple-icons:microsoftteams",
+};
+
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 18, class: className } = Astro.props;
+const iconName = ICON_MAP[name] || name;
+---
+
+<IconifyIcon name={iconName} width={size} height={size} class={className} />

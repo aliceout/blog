@@ -1,0 +1,33 @@
+---
+import { getCategory } from "../utils/categories.js";
+import { formatDateShort, readingTime } from "../utils/posts.js";
+
+interface Props {
+  post: any;
+}
+
+const { post } = Astro.props;
+const cat = getCategory(post.data.category);
+const rt = readingTime(post.body);
+---
+
+<a class="blog-row" href={`/billets/${post.id}/`} style={`--hue:${cat.hue}`}>
+  <div class="blog-cat-text font-mono text-[11.5px] tracking-[0.02em]">
+    {cat.label}
+  </div>
+  <h2
+    class="blog-row-title text-[20px] [font-weight:550] tracking-[-0.015em] leading-[1.25] mt-[7px] mb-[8px]"
+  >
+    {post.data.title}
+  </h2>
+  <p class="text-[14px] text-ink-2 leading-[1.55] max-w-[64ch]">
+    {post.data.excerpt}
+  </p>
+  <div
+    class="mt-[11px] font-mono text-[11.5px] text-ink-3 flex items-center gap-[9px]"
+  >
+    <span>{formatDateShort(post.data.date)}</span>
+    <span class="w-[3px] h-[3px] rounded-full bg-current"></span>
+    <span>{rt} de lecture</span>
+  </div>
+</a>

@@ -1,0 +1,10 @@
+services:
+  web:
+    image: ghcr.io/aliceout/blog:latest
+    container_name: blog
+    restart: unless-stopped
+    pull_policy: always
+    # Set HOST_PORT in your server .env (or remove this block if you join a
+    # reverse-proxy network instead of publishing to the host).
+    ports:
+      - "${HOST_PORT}:3000"

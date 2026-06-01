@@ -1,0 +1,171 @@
+---
+import Icon from "./Icon.astro";
+import site from "../data/site.json";
+import { NAV_ITEMS, BRAND_HUE, sectionFromPath } from "../config.js";
+
+const current = sectionFromPath(Astro.url.pathname);
+---
+
+{/* Topbar mobile — visible uniquement sous lg */}
+<header
+  class="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center gap-3 px-4 py-3 backdrop-blur-md border-b border-line bg-[color-mix(in_srgb,var(--bg)_85%,transparent)]"
+>
+  <a href="/" class="flex items-baseline gap-px font-mono font-semibold text-[17px] tracking-[-0.02em] text-ink no-underline">
+    <span class="blog-brand-caret" style={`--hue:${BRAND_HUE}`}>~/</span><span>{site.name}</span>
+  </a>
+  <div class="flex-1"></div>
+  <button
+    type="button"
+    data-sidebar-toggle
+    aria-label="Menu"
+    aria-expanded="false"
+    aria-controls="blog-sidebar"
+    class="w-10 h-10 grid place-items-center rounded-[10px] border border-line text-ink-2 hover:text-ink hover:bg-surface-tint transition-colors"
+  >
+    <span data-sidebar-icon-open><Icon name="menu" size={20} /></span>
+    <span data-sidebar-icon-close class="hidden"><Icon name="close" size={20} /></span>
+  </button>
+</header>
+
+{/* Backdrop drawer mobile */}
+<div
+  data-sidebar-backdrop
+  aria-hidden="true"
+  class="lg:hidden fixed inset-0 z-30 bg-black/45 opacity-0 pointer-events-none transition-opacity"
+>
+</div>
+
+{/* Sidebar : drawer mobile (slide-in) + fixed desktop */}
+<aside
+  id="blog-sidebar"
+  data-sidebar
+  class="fixed top-0 left-0 h-[100dvh] lg:h-screen w-[270px] lg:w-[248px] px-[26px] pt-[34px] pb-[26px] flex flex-col border-r border-line bg-surface z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 overflow-y-auto"
+>
+  <div>
+    <a
+      href="/"
+      class="flex items-baseline gap-px font-mono font-semibold text-[18px] tracking-[-0.02em] text-ink no-underline"
+    >
+      <span class="blog-brand-caret" style={`--hue:${BRAND_HUE}`}>~/</span><span>{site.name}</span>
+    </a>
+    <p class="text-[12.5px] leading-[1.45] text-ink-2 mt-[9px]">{site.tagline}</p>
+  </div>
+
+  <nav class="mt-[34px] flex flex-col gap-[2px]" style={`--hue:${BRAND_HUE}`}>
+    {
+      NAV_ITEMS.map((it) => (
+        <a
+          href={it.href}
+          class="blog-nav-link"
+          data-active={current === it.match}
+          {...(it.external ? { target: "_self" } : {})}
+        >
+          {it.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="mt-auto pt-[22px] border-t border-line">
+    <button
+      type="button"
+      data-theme-toggle
+      class="blog-toggle"
+      aria-label="Basculer le thème clair / sombre"
+    >
+      <span data-toggle-icon-dark class="contents"><Icon name="moon" size={14} /></span>
+      <span data-toggle-icon-light class="contents hidden"><Icon name="sun" size={14} /></span>
+      <span data-toggle-label>sombre</span>
+    </button>
+  </div>
+</aside>
+
+{/* Drawer mobile — event delegation, survit aux navigations ClientRouter */}
+<script is:inline>
+  (function () {
+    if (window.__sidebarBound) return;
+    window.__sidebarBound = true;
+
+    const setOpen = (open) => {
+      const aside = document.querySelector("[data-sidebar]");
+      const backdrop = document.querySelector("[data-sidebar-backdrop]");
+      const toggle = document.querySelector("[data-sidebar-toggle]");
+      if (!aside || !backdrop || !toggle) return;
+      const iconOpen = toggle.querySelector("[data-sidebar-icon-open]");
+      const iconClose = toggle.querySelector("[data-sidebar-icon-close]");
+      if (open) {
+        aside.classList.remove("-translate-x-full");
+        aside.classList.add("translate-x-0");
+        backdrop.classList.remove("opacity-0", "pointer-events-none");
+        backdrop.classList.add("opacity-100");
+        toggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+        if (iconOpen) iconOpen.classList.add("hidden");
+        if (iconClose) iconClose.classList.remove("hidden");
+      } else {
+        aside.classList.add("-translate-x-full");
+        aside.classList.remove("translate-x-0");
+        backdrop.classList.add("opacity-0", "pointer-events-none");
+        backdrop.classList.remove("opacity-100");
+        toggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+        if (iconOpen) iconOpen.classList.remove("hidden");
+        if (iconClose) iconClose.classList.add("hidden");
+      }
+    };
+    const isOpen = () =>
+      document.querySelector("[data-sidebar-toggle]")?.getAttribute("aria-expanded") === "true";
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      if (e.target.closest("[data-sidebar-toggle]")) return setOpen(!isOpen());
+      if (e.target.closest("[data-sidebar-backdrop]")) return setOpen(false);
+      const aside = document.querySelector("[data-sidebar]");
+      if (aside && aside.contains(e.target) && e.target.closest("a")) {
+        if (window.innerWidth < 1024) setOpen(false);
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && isOpen()) setOpen(false);
+    });
+    document.addEventListener("astro:after-swap", () => setOpen(false));
+  })();
+</script>
+
+{/* Toggle thème — flip data-theme sur <html>, persisté dans localStorage["theme"] */}
+<script is:inline>
+  (function () {
+    const sync = () => {
+      const isDark =
+        document.documentElement.getAttribute("data-theme") === "dark";
+      document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
+        const dark = btn.querySelector("[data-toggle-icon-dark]");
+        const light = btn.querySelector("[data-toggle-icon-light]");
+        const label = btn.querySelector("[data-toggle-label]");
+        // En sombre, on propose de passer en clair (soleil + "clair").
+        if (dark) dark.classList.toggle("hidden", isDark);
+        if (light) light.classList.toggle("hidden", !isDark);
+        if (label) label.textContent = isDark ? "clair" : "sombre";
+      });
+    };
+
+    if (!window.__themeToggleBound) {
+      window.__themeToggleBound = true;
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest && e.target.closest("[data-theme-toggle]");
+        if (!btn) return;
+        const next =
+          document.documentElement.getAttribute("data-theme") === "dark"
+            ? "light"
+            : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try {
+          localStorage.setItem("theme", next);
+        } catch (_) {}
+        sync();
+      });
+      document.addEventListener("astro:after-swap", sync);
+    }
+    sync();
+  })();
+</script>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppShell from "../components/AppShell.astro";
+import site from "../data/site.json";
+---
+
+<BaseLayout title="À propos" path="/a-propos/">
+  <AppShell>
+    <div
+      class="px-6 sm:px-10 lg:px-16 pt-10 lg:pt-[46px] pb-16 max-w-[760px]"
+      style="--hue:150"
+    >
+      <h1
+        class="font-tight text-[34px] sm:text-[38px] font-semibold tracking-[-0.03em] leading-[1.12] mb-[24px]"
+      >
+        À propos
+      </h1>
+      <div class="prose">
+        <p>
+          <strong>{site.name}</strong>, ce sont {site.tagline}
+        </p>
+        <p>
+          J'y note ce que je veux pouvoir retrouver plus tard : une commande qui
+          m'a sauvé, une notion système enfin comprise, un bout de config qui
+          marche. Rien de prétentieux — juste des notes que j'aurais aimé lire
+          ailleurs.
+        </p>
+        <p>
+          Le code de ce blog est ouvert sur <a href={site.githubUrl}>GitHub</a>.
+          Une remarque, une coquille ? <a href={site.mailUrl}>Écris-moi</a>.
+        </p>
+      </div>
+    </div>
+  </AppShell>
+</BaseLayout>

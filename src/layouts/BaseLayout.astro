@@ -1,0 +1,112 @@
+---
+// Self-hosted fonts (variable, weight axis only)
+import "@fontsource-variable/inter/wght.css";
+import "@fontsource-variable/inter-tight/wght.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
+// woff2 URL for preloading the above-the-fold heading font
+import interTightWoff2 from "@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url";
+
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import site from "../data/site.json";
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  ogType?: string;
+}
+
+const {
+  title,
+  description = site.description,
+  path = "/",
+  ogType = "website",
+} = Astro.props;
+
+const resolvedTitle = title ? `${title} — ${site.name}` : site.name;
+
+const siteUrl = Astro.site ? Astro.site.toString().replace(/\/$/, "") : "";
+const canonical = `${siteUrl}${path}`;
+const ogCard = `${siteUrl}/og-image.png`;
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: site.name,
+  url: siteUrl || canonical,
+  description: site.description,
+  inLanguage: "fr",
+  author: { "@type": "Person", name: site.author },
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{resolvedTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href={`${siteUrl}/rss.xml`} />
+
+    {/* Open Graph */}
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={resolvedTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogCard} />
+    <meta property="og:locale" content="fr_FR" />
+
+    {/* Twitter / X card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={resolvedTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogCard} />
+
+    {/* Preload above-the-fold heading font */}
+    <link
+      rel="preload"
+      href={interTightWoff2}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <ClientRouter />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(websiteSchema)}
+    />
+
+    <script is:inline>
+      (function () {
+        const applyTheme = () => {
+          try {
+            const stored = localStorage.getItem("theme");
+            const prefersDark =
+              window.matchMedia &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = stored || (prefersDark ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+          } catch (_) {
+            /* no-op */
+          }
+        };
+        applyTheme();
+        if (!window.__themeApplyBound) {
+          window.__themeApplyBound = true;
+          document.addEventListener("astro:after-swap", applyTheme);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
