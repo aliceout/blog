@@ -2,13 +2,19 @@ import { getCollection } from "astro:content";
 
 /**
  * Billets triés du plus récent au plus ancien.
- * Les brouillons (draft: true) sont masqués en production.
+ * Les billets épinglés (pinned: true) remontent en tête, eux-mêmes triés
+ * par date. Les brouillons (draft: true) sont masqués en production.
  */
 export async function getSortedPosts() {
   const posts = await getCollection("posts", ({ data }) =>
     import.meta.env.PROD ? data.draft !== true : true,
   );
-  return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.sort((a, b) => {
+    // Épinglés d'abord
+    if (a.data.pinned !== b.data.pinned) return a.data.pinned ? -1 : 1;
+    // Puis du plus récent au plus ancien
+    return b.data.date.valueOf() - a.data.date.valueOf();
+  });
 }
 
 /** Temps de lecture estimé (~200 mots/min) à partir du corps markdown. */

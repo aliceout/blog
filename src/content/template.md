@@ -1,9 +1,11 @@
 ---
-title: Les variables CSS que j'aurais aimé connaître plus tôt
+title: Ce qui tourne chez moi
 category: web
 date: 2026-02-29
 excerpt: "Theming, calc(), portée locale… de quoi arrêter de se battre avec son CSS au quotidien."
 tags: ["css", "theming", "frontend"]
+draft: true
+pinned: false
 ---
 
 Les variables CSS (custom properties) ne servent pas qu'à ranger ses couleurs en haut du fichier. Trois usages changent vraiment la façon d'écrire du style.
