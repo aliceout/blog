@@ -7,4 +7,4 @@ services:
     # Set HOST_PORT in your server .env (or remove this block if you join a
     # reverse-proxy network instead of publishing to the host).
     ports:
-      - "${HOST_PORT}:3000"
+      - "${HOST_PORT}:2367"
