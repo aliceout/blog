@@ -1,8 +1,8 @@
 {
   "name": "alyss",
-  "tagline": "petites notes de dev & sysadmin, sans prétention.",
+  "tagline": "petites notes sans prétention.",
   "author": "Alyss",
-  "description": "Petit blog perso de dev et de sysadmin : notes courtes, commandes utiles et retours d'expérience.",
+  "description": "Petit blog perso : notes courtes, commandes utiles et retours d'expérience.",
   "githubUrl": "https://github.com/aliceout",
   "mailUrl": "mailto:contact.disprove112@slmail.me"
 }
