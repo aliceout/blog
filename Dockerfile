@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1.7
 
 # ---------- 1. Build the Astro static site ----------
-FROM node:22-alpine AS builder
+# Debian (glibc), pas alpine : le markdown Sätteri d'Astro 7 n'a pas de binaire
+# natif musl (le lockfile ne contient que linux-x64-gnu). glibc l'utilise.
+FROM node:22-slim AS builder
 WORKDIR /app
 
 # Enable pnpm via corepack (version pinned in package.json's packageManager)
@@ -23,7 +25,7 @@ COPY . .
 RUN pnpm build
 
 # ---------- 2. Serve dist/ as static content ----------
-FROM node:22-alpine AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 
 # `serve` is a small, well-maintained static file server
