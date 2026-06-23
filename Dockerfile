@@ -12,7 +12,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 
 # Install with --ignore-scripts (pnpm 11's approval check would otherwise fail
 # in CI), then explicitly rebuild native binaries we actually need.
-RUN pnpm install --frozen-lockfile --ignore-scripts \
+# --config.minimumReleaseAge=0 : le lockfile est déjà revu/committé ; la garde
+# "âge minimum" a fait son travail à la résolution. En mode --frozen-lockfile,
+# minimumReleaseAgeExclude n'est pas respecté (pnpm#10361), d'où l'override.
+RUN pnpm install --frozen-lockfile --ignore-scripts --config.minimumReleaseAge=0 \
  && pnpm rebuild esbuild sharp
 
 # Copy the rest of the source and build the static site → /app/dist
